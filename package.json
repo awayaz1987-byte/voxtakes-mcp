@@ -1,0 +1,10 @@
+{
+  "name": "voxtakes-mcp",
+  "version": "0.1.0",
+  "description": "MCP server for the Voxtakes video-dubbing API (translate + dub + subtitles + per-line re-record, 9 languages). Stdio, zero deps.",
+  "type": "module",
+  "bin": { "voxtakes-mcp": "server.js" },
+  "engines": { "node": ">=18" },
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/awayaz1987-byte/voxtakes-mcp" }
+}
