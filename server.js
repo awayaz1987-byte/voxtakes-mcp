@@ -49,10 +49,11 @@ const LANGS = ["en", "es", "de", "ja", "fr", "ko", "pt", "zh"];
 const TOOLS = [
   {
     name: "dub_video",
-    description: "Translate + dub a video. src = {kind:'url',url} (YouTube etc.) or {kind:'upload',key} (from presign_upload). langs: subset of en,es,de,ja,fr,ko,pt,zh. delivery: voice|subs|clean(hard-sub erase). gate:true (default) returns a free preview + script first — call approve_script to bill the full render. Returns job id/status.",
+    description: "Translate + dub a video. src = {kind:'url',url} (YouTube etc.) or {kind:'upload',key} (from presign_upload). langs: subset of en,es,de,ja,fr,ko,pt,zh. delivery: voice|subs|clean(hard-sub erase). gate:true (default) returns a free preview + script first — call approve_script to bill the full render. speed:'eco' (default 'std') = Economy delivery: identical pipeline on our off-peak GPU pool, HALF credits, 48h target window — paid plans only. Returns job id/status.",
     inputSchema: { type: "object", properties: {
       src: { type: "object" }, langs: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 6 },
       delivery: { type: "object", properties: { voice: { type: "boolean" }, subs: { type: "boolean" }, clean: { type: "boolean" } } },
+      speed: { type: "string", enum: ["std", "eco"], description: "eco = half credits, 48h target (paid plans only)" },
       style: { type: "string", enum: ["clean", "karaoke", "karaoke_tw", "bilingual"] },
       gate: { type: "boolean" } }, required: ["src", "langs"] },
   },
@@ -127,6 +128,7 @@ async function callTool(name, args) {
     case "dub_video": {
       const body = { src: args.src, langs: args.langs,
         ...(args.delivery ? { delivery: args.delivery } : {}),
+        ...(args.speed === "eco" ? { speed: "eco" } : {}),
         ...(args.style ? { style: args.style } : {}),
         ...(args.gate === undefined ? {} : { gate: args.gate }) };
       const job = await api("POST", "/api/jobs", body);
